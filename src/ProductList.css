@@ -38,6 +38,16 @@ body {
     text-decoration: none;
    
 }
+/* Example CSS for the number */
+.number {
+    position: relative;
+    left: -38px; /* Move right */
+    top: 20px; /* Move up */
+    font-size: 24px;
+    color: #ffffff;
+  }
+  
+  
 
 /* Product Grid */
 .product-grid {
