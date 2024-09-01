@@ -4,7 +4,7 @@ import {removeItem, updateQuantity } from './CartSlice';
 import './CartItem.css';
 
 
-const CartItem = ({ onContinueShopping, onUpdateValue, onUpdateAvailability }) => {
+const CartItem = ({ onContinueShopping, onUpdateIncreased, onUpdateDecreased, onUpdateValue, onUpdateAvailability }) => {
   const dispatch = useDispatch();
   const cart = useSelector(state => state.cart.items);
 
@@ -28,13 +28,17 @@ const CartItem = ({ onContinueShopping, onUpdateValue, onUpdateAvailability }) =
 
   const handleIncrement = (item) => {
     dispatch(updateQuantity({ name: item.name, quantity: item.quantity + 1 }));
+    onUpdateIncreased();
   };
 
 const handleDecrement = (item) => {
     if (item.quantity > 1) {
+        onUpdateDecreased(item);
         dispatch(updateQuantity({ name: item.name, quantity: item.quantity - 1 }));
     } else {
-        dispatch(removeItem(item));
+        onUpdateDecreased(item);
+        dispatch(removeItem(item.name));
+        onUpdateAvailability(item);
     }
 };
 
