@@ -3,8 +3,7 @@ import './ProductList.css'
 import CartItem from './CartItem';
 import { addItem} from "./CartSlice";
 import { useDispatch } from 'react-redux';
-import axios from 'axios';
-
+import { supabase } from './supabaseClient';
 function ProductList() {
     const dispatch = useDispatch();
     const [showCart, setShowCart] = useState(false); 
@@ -13,6 +12,9 @@ function ProductList() {
     // Use useState to define a state variable and its setter function
     const [number, setNumber] = useState(0);
     const [products, setProducts] = useState([]);
+
+    // Define the base URL for your Express backend
+    const API_URL = 'https://nbhajfdpvkurpnyxpvaz.supabase.co'; // Update with your backend URL
     const categories = [
         {
             category: "Air Purifying Plants",
@@ -297,15 +299,20 @@ const handleContinueShopping = () => {
         }));
   };
   useEffect(() => {
-        // Fetch products from the backend
-        axios.get('http://localhost:5000/products')
-            .then(response => {
-                setProducts(response.data);
-            })
-            .catch(error => {
-                console.error('There was an error fetching the products!', error);
-            });
-    }, []);
+    const fetchData = async () => {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*');
+
+      if (error) {
+        console.error('Error fetching data:', error);
+      } else {
+        setProducts(data);
+      }
+    };
+
+    fetchData();
+  }, []);
     return (
         <div>
              <div className="navbar" style={styleObj}>
@@ -339,7 +346,7 @@ const handleContinueShopping = () => {
                         category.not_repeated & category.category == plant.category ? <div className="product-card" key={plantIndex}>
                             <img className="product-image" src={plant.image} alt={plant.name} />
                             <div className="product-title">{plant.name}</div>
-                            <div className="product-cost">{plant.cost}</div>
+                            <div className="product-cost">{plant.price}</div>
                            
                             <button
                                 className={`product-button ${addedToCart[plant.name] ? 'added-to-cart' : ''}`}
