@@ -298,6 +298,15 @@ const handleContinueShopping = () => {
         [product.name]: false, // Set the product name as key and value as false to indicate it's not longer added to cart
         }));
   };
+  const convert_Todecimal = (item) => {
+    
+    const cost = typeof item.price === 'string' ? parseFloat(item.price.replace('$', '')) : item.price;
+    return cost.toFixed(2);
+    
+
+    
+    
+  };
   useEffect(() => {
     const fetchData = async () => {
       const { data, error } = await supabase
@@ -346,7 +355,7 @@ const handleContinueShopping = () => {
                         category.not_repeated & category.category == plant.category ? <div className="product-card" key={plantIndex}>
                             <img className="product-image" src={plant.image} alt={plant.name} />
                             <div className="product-title">{plant.name}</div>
-                            <div className="product-cost">{plant.price}</div>
+                            <div className="product-cost">${convert_Todecimal(plant)}</div>
                            
                             <button
                                 className={`product-button ${addedToCart[plant.name] ? 'added-to-cart' : ''}`}
